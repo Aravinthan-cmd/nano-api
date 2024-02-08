@@ -2,6 +2,7 @@ import Data from '../model/sensorModel.js'
 import User from "../model/userModel.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import axios from 'axios'
 
 //Register
 export const userRegister = async (req, res) => {
@@ -90,6 +91,64 @@ export const getallSensor = async(req,res)=>{
         res.status(500).json(error);
     }
 };
+
+const credentials = {
+  username: "aswin",
+  password: "xtw83te>fabtnec",
+  org_name: "XYMA"
+};
+
+const getAuthToken = async (credentials) => {
+  try {
+    const response = await axios.post('https://nanoprecisedataservices.com/data-sharing/api/v2/auth', credentials);
+    return response.data.token;
+  } catch (error) {
+    throw new Error("Error fetching authentication token");
+  }
+}
+
+export const getNano = async (req, res) => {
+    try {
+    //   const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+      const token = await getAuthToken(credentials);
+      console.log(token)
+      const response = await axios.get('https://nanoprecisedataservices.com/data-sharing/api/v2/graphId', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+//   const currentEpochTime = Math.floor(new Date().getTime() / 1000);
+//   const oneDaySeconds = 24 * 60 * 60; // Number of seconds in a day
+//   const oneDayBeforeEpochTime = currentEpochTime - oneDaySeconds; // One day before current epoch time
+  
+export  const getNanoGraph = async (req, res) => {
+    const token = await getAuthToken(credentials);
+    const {graphName,startDate,endDate} =req.query;
+    console.log(graphName);
+    try {
+      const response = await axios.get('https://nanoprecisedataservices.com/data-sharing/api/v2/analytics/graph', {
+        params: {
+          graphId: 'sound-rms',
+          tagIdList: 'XYMA7fc929ceb79c4a36ab7ef3939c8595f1',
+          timestampFrom: 1706440070,
+          timestampTo: 1707391067,
+          companyCode: 'XYMA'
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      res.status(200).json(response.data);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }  
 
 
 

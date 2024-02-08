@@ -24,19 +24,6 @@ mongoose.connection.on('disconnected',()=>{
 //for json
 app.use(express.json());
 
-// Enable CORS with dynamic origin check
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     // Check if the origin is allowed or if it's undefined (for same-origin requests)
-//     const allowedOrigins = ['http://192.168.1.200:3000'];
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-// }));
-
 app.use(cors({
     origin: '*',
 }))
