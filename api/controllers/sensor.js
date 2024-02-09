@@ -45,15 +45,13 @@ export const userData = async (req, res) => {
     }
 }
 
-//Insert 
+//Insert
 export const InsertData = async (req, res) => {
     const { vibration, acoustics, temperature, humidity, rpm, magnetic_flex, timestamp } = req.query;
-    
 
     if (!vibration || !acoustics || !temperature || !humidity || !rpm || !magnetic_flex || !timestamp) {
         return res.status(400).json({ error: "Missing required parameters" });
     }
-
     try {
         const newData = {
             vibration: vibration,
@@ -64,7 +62,6 @@ export const InsertData = async (req, res) => {
             magnetic_flex: magnetic_flex,
             timestamp: timestamp,
         };
-
         await Data.create(newData); // Use Data instead of sensor
         res.status(200).json({ message: "Data inserted successfully" });
     } catch (err) {
@@ -92,6 +89,25 @@ export const getallSensor = async(req,res)=>{
     }
 };
 
+export const getLast = async (req, res) => {
+    let {select} = req.query;
+    try {
+      // Use the appropriate model name if "Data" is not the correct model name
+      const getLast5SensorData = await Data.find({}, { vibration: 1, updatedAt: 1, _id: 0 })
+        .sort({ updatedAt: -1 })
+        .limit(15);
+  
+      const sensorDataWithTimestamp = getLast5SensorData.map(doc => ({
+        vibration: doc.vibration,
+        updatedAt: doc.updatedAt
+      }));
+  
+      res.status(200).json(sensorDataWithTimestamp);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };  
+
 const credentials = {
   username: "aswin",
   password: "xtw83te>fabtnec",
@@ -109,9 +125,7 @@ const getAuthToken = async (credentials) => {
 
 export const getNano = async (req, res) => {
     try {
-    //   const currentEpochTime = Math.floor(new Date().getTime() / 1000);
       const token = await getAuthToken(credentials);
-      console.log(token)
       const response = await axios.get('https://nanoprecisedataservices.com/data-sharing/api/v2/graphId', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -122,22 +136,27 @@ export const getNano = async (req, res) => {
       res.status(500).json(error);
     }
   }
-
-//   const currentEpochTime = Math.floor(new Date().getTime() / 1000);
-//   const oneDaySeconds = 24 * 60 * 60; // Number of seconds in a day
-//   const oneDayBeforeEpochTime = currentEpochTime - oneDaySeconds; // One day before current epoch time
   
 export  const getNanoGraph = async (req, res) => {
-    const token = await getAuthToken(credentials);
-    const {graphName,startDate,endDate} =req.query;
+    let token = await getAuthToken(credentials);
+    let {graphName,startDate,endDate} = req.query;
+    if(graphName === undefined) {
+        graphName = 'temperature'
+    }
+    if(startDate === undefined){
+        startDate = 1706440070
+    }
+    if(endDate === undefined){
+        endDate = 1707391067
+    }
     console.log(graphName);
     try {
       const response = await axios.get('https://nanoprecisedataservices.com/data-sharing/api/v2/analytics/graph', {
         params: {
-          graphId: 'sound-rms',
+          graphId: `${graphName}`,
           tagIdList: 'XYMA7fc929ceb79c4a36ab7ef3939c8595f1',
-          timestampFrom: 1706440070,
-          timestampTo: 1707391067,
+          timestampFrom: startDate,
+          timestampTo: endDate,
           companyCode: 'XYMA'
         },
         headers: {
