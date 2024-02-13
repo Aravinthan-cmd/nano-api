@@ -47,20 +47,17 @@ export const userData = async (req, res) => {
 
 //Insert
 export const InsertData = async (req, res) => {
-    const { vibration, acoustics, temperature, humidity, rpm, magnetic_flex, timestamp } = req.query;
+    const { density, viscosity, temperature, dtn} = req.query;
 
-    if (!vibration || !acoustics || !temperature || !humidity || !rpm || !magnetic_flex || !timestamp) {
+    if (!density || !viscosity || !temperature || !dtn) {
         return res.status(400).json({ error: "Missing required parameters" });
     }
     try {
         const newData = {
-            vibration: vibration,
-            acoustics: acoustics,
+            density: density,
+            viscosity: viscosity,
             temperature: temperature,
-            humidity: humidity,
-            rpm: rpm,
-            magnetic_flex: magnetic_flex,
-            timestamp: timestamp,
+            dtn: dtn,
         };
         await Data.create(newData); // Use Data instead of sensor
         res.status(200).json({ message: "Data inserted successfully" });
