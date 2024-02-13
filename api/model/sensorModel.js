@@ -1,24 +1,15 @@
 import mongoose from 'mongoose';
 const Data = new mongoose.Schema({
-    vibration:{
+    density:{
         type:String
     },
-    acoustics: {
+    viscosity: {
         type:String
     },
     temperature:  {
         type:String
     },
-    humidity:  {
-        type:String
-    },
-    rpm:  {
-        type:String
-    },
-    magnetic_flex: {
-        type:String
-    },
-    timestamp: {
+    dtn:  {
         type:String
     },
 },{timestamps:true})
