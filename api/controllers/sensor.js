@@ -123,6 +123,7 @@ const getAuthToken = async (credentials) => {
 export const getNano = async (req, res) => {
     try {
       const token = await getAuthToken(credentials);
+      console.log(token);
       const response = await axios.get('https://nanoprecisedataservices.com/data-sharing/api/v2/graphId', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -137,14 +138,16 @@ export const getNano = async (req, res) => {
 export  const getNanoGraph = async (req, res) => {
     let token = await getAuthToken(credentials);
     let {graphName,startDate,endDate} = req.query;
+    const currentDate = Math.floor(Date.now() / 1000);
     if(graphName === undefined) {
-        graphName = 'temperature'
+        graphName = 'temperature';
     }
     if(startDate === undefined){
-        startDate = 1706440070
+        startDate = 1706440070;
     }
     if(endDate === undefined){
-        endDate = 1707391067
+        endDate = currentDate;
+        console.log("current",currentDate);
     }
     console.log(graphName);
     try {
