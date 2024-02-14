@@ -59,7 +59,7 @@ export const InsertData = async (req, res) => {
             temperature: temperature,
             dtn: dtn,
         };
-        await Data.create(newData); // Use Data instead of sensor
+        await Data.create(newData);
         res.status(200).json({ message: "Data inserted successfully" });
     } catch (err) {
         res.status(500).json({ error: err.message });
