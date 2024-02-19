@@ -1,5 +1,6 @@
 import Data from '../model/sensorModel.js'
 import User from "../model/userModel.js"
+import Btn from "../model/buttonModel.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import axios from 'axios'
@@ -116,7 +117,8 @@ const getAuthToken = async (credentials) => {
     const response = await axios.post('https://nanoprecisedataservices.com/data-sharing/api/v2/auth', credentials);
     return response.data.token;
   } catch (error) {
-    throw new Error("Error fetching authentication token");
+    // throw new Error("Error fetching authentication token");
+    console.log("Error fetching authentication token");
   }
 }
 
@@ -168,6 +170,22 @@ export  const getNanoGraph = async (req, res) => {
       res.status(500).json(error);
     }
   }  
+
+  export const insertBtnData = async (req, res) => {
+    const {value} = req.query;
+    if (!value) {
+        return res.status(400).json({ error: "Missing required parameters" });
+    }
+    try {
+        const newData = {
+            value: value,
+        };
+        await Btn.create(newData);
+        res.status(200).json({ message: `Data inserted successfully ${value}` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 
 

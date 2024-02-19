@@ -1,5 +1,5 @@
 import express from "express";
-import { userData, userRegister,InsertData,getSensor,getallSensor,getNano,getNanoGraph,getLast} from "../controllers/sensor.js";
+import { userData, userRegister,InsertData,getSensor,getallSensor,getNano,getNanoGraph,getLast,insertBtnData} from "../controllers/sensor.js";
 
 const router = express.Router();
 
@@ -20,5 +20,8 @@ router.get('/getNano',getNano);
 router.get('/getNanoGraph', getNanoGraph);
 
 router.get('/getLast',getLast);
+
+//Btn
+router.get('/getValue',insertBtnData);
 
 export default router;
