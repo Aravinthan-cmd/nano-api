@@ -48,9 +48,9 @@ export const userData = async (req, res) => {
 
 //Insert
 export const InsertData = async (req, res) => {
-    const { density, viscosity, temperature, dtn} = req.query;
+    const { density, viscosity, temperature, dtn, oil, currentTemperature, TDT, TOC} = req.query;
 
-    if (!density || !viscosity || !temperature || !dtn) {
+    if (!density || !viscosity || !temperature || !dtn, !oil, !currentTemperature, !TDT, !TOC) {
         return res.status(400).json({ error: "Missing required parameters" });
     }
     try {
@@ -59,6 +59,10 @@ export const InsertData = async (req, res) => {
             viscosity: viscosity,
             temperature: temperature,
             dtn: dtn,
+            oil: oil,
+            currentTemperature: currentTemperature,
+            TDT: TDT,
+            TOC: TOC
         };
         await Data.create(newData);
         res.status(200).json({ message: "Data inserted successfully" });
@@ -77,7 +81,7 @@ export const getSensor = async(req,res)=>{
     }
 };
 
-//get
+//get all
 export const getallSensor = async(req,res)=>{
     try {
         const getsensor= await Data.find().sort({updatedAt:-1}).limit(50);
@@ -151,7 +155,6 @@ export  const getNanoGraph = async (req, res) => {
         endDate = currentDate;
         console.log("current",currentDate);
     }
-    console.log(graphName);
     try {
       const response = await axios.get('https://nanoprecisedataservices.com/data-sharing/api/v2/analytics/graph', {
         params: {
